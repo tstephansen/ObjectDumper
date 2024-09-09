@@ -184,8 +184,9 @@ namespace ObjectDumping.Internal
         private PropertyInfo[] GetPropertiesToDump(Type type, PropertyInfo[] recordCtorProperties)
         {
             var properties = type.GetRuntimeProperties()
-                    .Where(p => p.GetMethod != null && p.GetMethod.IsPublic && p.GetMethod.IsStatic == false)
-                    .ToArray();
+                .Where(p => p.GetMethod != null && p.GetMethod.IsPublic && p.GetMethod.IsStatic == false &&
+                            p.GetCustomAttributes().All(c => c.GetType() != typeof(ExcludeFromObjectDumperAttribute)))
+                .ToArray();
 
             if (recordCtorProperties?.Any() ?? false)
             {

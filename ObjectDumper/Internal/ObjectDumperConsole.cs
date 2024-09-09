@@ -40,7 +40,8 @@ namespace ObjectDumping.Internal
             this.Level++;
 
             var properties = type.GetRuntimeProperties()
-                .Where(p => p.GetMethod != null && p.GetMethod.IsPublic && p.GetMethod.IsStatic == false)
+                .Where(p => p.GetMethod != null && p.GetMethod.IsPublic && p.GetMethod.IsStatic == false &&
+                            p.GetCustomAttributes().All(c => c.GetType() != typeof(ExcludeFromObjectDumperAttribute)))
                 .ToList();
 
             if (this.DumpOptions.ExcludeProperties != null && this.DumpOptions.ExcludeProperties.Any())

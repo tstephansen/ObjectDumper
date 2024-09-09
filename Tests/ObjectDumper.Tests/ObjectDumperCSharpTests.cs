@@ -1885,5 +1885,43 @@ namespace ObjectDumping.Tests
 #endif
                 "};");
         }
+
+        [Fact]
+        public void ShouldDumpNestedObject_WithAttributeExcludedProperties()
+        {
+            // Arrange
+            var nestedObject = new NestedObject
+            {
+                Category = "Test",
+                Child = new NestedChild
+                {
+                    FirstName = "Unit",
+                    LastName = "Test",
+                    Child = new SecondNestedChild { Age = 30, Nickname = "I'm Excluded" }
+                }
+            };
+
+            // Act
+            var dump = ObjectDumperCSharp.Dump(nestedObject);
+
+            // Assert
+            this.testOutputHelper.WriteLine(dump);
+            dump.Should().NotBeNull();
+            dump.Should().Be(
+                "var nestedObject = new NestedObject\r\n" +
+                "{\r\n" +
+                "  Category = \"Test\",\r\n" +
+                "  Child = new NestedChild\r\n" +
+                "  {\r\n" +
+                "    FirstName = \"Unit\",\r\n" +
+                "    LastName = \"Test\",\r\n" +
+                "    Child = new SecondNestedChild\r\n" +
+                "    {\r\n" +
+                "      Age = 30\r\n" +
+                "    }\r\n" +
+                "  }\r\n" +
+                "};"
+            );
+        }
     }
 }
